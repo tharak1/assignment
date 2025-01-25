@@ -3,6 +3,7 @@ import axios, { AxiosError } from 'axios';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
+import toast from 'react-hot-toast';
 import { IoIosEye, IoIosEyeOff } from 'react-icons/io';
 
 const SignUpPage = () => {
@@ -30,18 +31,21 @@ const SignUpPage = () => {
             console.log(userDataWithPassword);
             const response = await axios.post("/api/signup", userDataWithPassword);
             console.log("Signup success", response.data);
+            toast.success("Successfully Signed Up!")
             router.push("/login");
           } catch (error: unknown) {
-            console.log("Login failed", error);
-        
+            console.log("Signup failed", error);
             if (error instanceof AxiosError && error.response?.data?.error) {
                 setError(error.response.data.error);
+                toast.error(error.response.data.error);
             } else if (error instanceof Error) {
                 setError(error.message || "Something went wrong. Please try again.");
+                toast.error(error.message || "Something went wrong. Please try again.");
             } else {
                 setError("An unknown error occurred.");
+                toast.error("An unknown error occurred.");
             }
-        }
+          }
          finally {
             setLoading(false);
           }

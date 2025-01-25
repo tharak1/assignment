@@ -1,17 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from '@headlessui/react';
-import axios from 'axios';
-
-function formatToInputDate(dob: string): string {
-const [day, month, year] = dob.split('-');
-return `${year}-${month}-${day}`;
-}
-
-function formatToDisplayDate(dob: string): string {
-const [year, month, day] = dob.split('-');
-return `${day}-${month}-${year}`;
-}
-  
+import axios, { AxiosError } from 'axios';
+import toast from 'react-hot-toast';
 
 interface Data {
     _id: string;
@@ -54,9 +44,19 @@ const EditDataModal: React.FC<EditDataModalProps> = ({ isOpen, onClose, handleEd
                 console.log(response.data.data);
                 handleEditUpdate(response.data.data);
             }
-        } catch (error) {
-            console.error('Error updating data:', error);
-        } finally {
+        }catch (error: unknown) {
+            console.log("Edit failed", error);
+            if (error instanceof AxiosError && error.response?.data?.error) {
+                // console.log(error.response.data.error);
+                toast.error(error.response.data.error);
+            } else if (error instanceof Error){
+                // console.log(error.message || "Something went wrong. Please try again.");
+                toast.error(error.message || "Something went wrong. Please try again.");
+            } else {
+                // console.log("An unknown error occurred.");
+                toast.error("An unknown error occurred.");
+            }
+          } finally {
             setLoading(false);
             onClose();
         }

@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Button, Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from '@headlessui/react'
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
+import toast from 'react-hot-toast';
 
 interface Data {
     _id: string;
@@ -28,12 +29,19 @@ const AddDataModal:React.FC<AddDataModalProps> = ({isOpen,onClose,handleUpdate})
             setLoaing(true);
             const response = await axios.post(`/api/data`, data);
             console.log(response.data.savedData);
-
             handleUpdate(response.data.savedData);
-
-            
-        } catch (error) {
-            console.error('Error fetching data:', error);
+        }catch (error: unknown) {
+          console.log("Data Adding failed", error);
+          if (error instanceof AxiosError && error.response?.data?.error) {
+              // console.log(error.response.data.error);
+              toast.error(error.response.data.error);
+          } else if (error instanceof Error){
+              // console.log(error.message || "Something went wrong. Please try again.");
+              toast.error(error.message || "Something went wrong. Please try again.");
+          } else {
+              // console.log("An unknown error occurred.");
+              toast.error("An unknown error occurred.");
+          }
         }finally{
             setLoaing(false);
             setData({

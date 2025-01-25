@@ -2,6 +2,7 @@
 import axios, { AxiosError } from 'axios'
 import {useRouter} from "next/navigation";
 import React, { useState } from 'react';
+import toast from 'react-hot-toast';
 
 const Navbar = () => {
     const router = useRouter();
@@ -12,14 +13,20 @@ const Navbar = () => {
         setLoading(true);
         await axios.get('/api/logout')
         router.push('/login')
+        toast.success("Successfully Logged out");
+
       } catch (error: unknown) {
-        console.log("Login failed", error);
+        // console.log("Fetch failed", error);
+        toast.error("Logout failed");
         if (error instanceof AxiosError && error.response?.data?.error) {
-            console.log(error.response.data.error);
+          // console.log(error.response.data.error);
+          toast.error(error.response.data.error);
         } else if (error instanceof Error) {
-          console.log(error.message || "Something went wrong. Please try again.");
+          // console.log(error.message || "Something went wrong. Please try again.");
+          toast.error(error.message || "Something went wrong. Please try again.");
         } else {
-          console.log("An unknown error occurred.");
+          // console.log("An unknown error occurred.");
+          toast.error("An unknown error occurred.");
         }
       }finally{
         setLoading(false);
@@ -27,10 +34,10 @@ const Navbar = () => {
   }
 
   return (
-    <div className="w-full flex flex-row justify-between items-center bg-gray-100 dark:bg-slate-600 shadow-md p-3 h-16">
+    <div className="w-full flex flex-row justify-between items-center text-black bg-gray-100 dark:bg-slate-600 shadow-md p-3 h-16">
         <div className='flex flex-row justify-between items-center w-full'>
             <div>
-                <h1 className='font-bold text-xl'>Dashboard</h1>
+                <h1 className='font-bold text-xl text-black dark:text-gray-300'>Dashboard</h1>
             </div>
             <div>
               <button type="button" className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900" onClick={logout}>

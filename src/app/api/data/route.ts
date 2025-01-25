@@ -7,7 +7,7 @@ connect()
 export async function POST(request: NextRequest) {
     try {
         const reqBody = await request.json()
-        const {name, age, dob} = reqBody;
+        const {name, dob} = reqBody;
         console.log(reqBody);
     
         const newData = new Data({
@@ -30,6 +30,8 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
     try {
+        const reqBody = await request.json();
+        console.log(reqBody);
         const data = await Data.find();
         return NextResponse.json({ success: true, data }, { status: 200 }); 
     } catch (error: unknown) {
