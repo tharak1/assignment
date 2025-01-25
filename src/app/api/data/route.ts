@@ -28,10 +28,8 @@ export async function POST(request: NextRequest) {
     }
 }
 
-export async function GET(request: NextRequest) {
+export async function GET() {
     try {
-        const reqBody = await request.json();
-        console.log(reqBody);
         const data = await Data.find();
         return NextResponse.json({ success: true, data }, { status: 200 }); 
     } catch (error: unknown) {
