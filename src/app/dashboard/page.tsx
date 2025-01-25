@@ -92,7 +92,7 @@ const DashboardPage = () => {
         const response = await axios.get('/api/data');
         const fetchedData = response.data.data.map((item: Data) =>
           createData(item._id, item.name, item.dob)
-        );
+        ).reverse();
         setRows(fetchedData);
       }catch (error: unknown) {
         // console.log("Fetch failed", error);
@@ -157,9 +157,8 @@ const DashboardPage = () => {
       console.error('Invalid data. Cannot add to rows.');
       return;
     }
-    setRows((prevRows) => [...prevRows, createData(data._id, data.name, data.dob)]);
+    setRows((prevRows) => [createData(data._id, data.name, data.dob), ...prevRows]);
     toast.success('Data Added Successfully !');
-
   };
 
   const handleEditUpdate = async (data: Data) => {
